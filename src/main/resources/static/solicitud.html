@@ -1,0 +1,280 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicitud de adopción | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .solicitud-contenedor {
+            max-width: 850px;
+            margin: 40px auto;
+            padding: 20px;
+        }
+        .solicitud-tarjeta {
+            background: white;
+            border-radius: 22px;
+            padding: 32px;
+            box-shadow: 0 8px 28px rgba(60, 80, 60, 0.10);
+        }
+        .solicitud-titulo {
+            text-align: center;
+            color: #438957;
+            margin-bottom: 10px;
+        }
+        .solicitud-descripcion {
+            text-align: center;
+            color: #666;
+            margin-bottom: 28px;
+        }
+        .mascota-seleccionada {
+            background: #e1efdf;
+            border-radius: 14px;
+            padding: 16px;
+            margin-bottom: 25px;
+            color: #315e3b;
+        }
+        .formulario-solicitud {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 18px;
+        }
+        .campo-solicitud {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .campo-completo {
+            grid-column: 1 / -1;
+        }
+        .campo-solicitud label {
+            font-weight: 600;
+            color: #444;
+        }
+        .campo-solicitud input,
+        .campo-solicitud select,
+        .campo-solicitud textarea {
+            width: 100%;
+            box-sizing: border-box;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            font: inherit;
+            background: #fffdfb;
+        }
+        .campo-solicitud textarea {
+            min-height: 110px;
+            resize: vertical;
+        }
+        .botones-solicitud {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        .boton-solicitud {
+            border: none;
+            border-radius: 25px;
+            padding: 13px 24px;
+            font-size: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .boton-enviar {
+            background: #438957;
+            color: white;
+        }
+        .boton-volver {
+            background: #e1efdf;
+            color: #315e3b;
+        }
+        .mensaje-solicitud {
+            display: none;
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        @media (max-width: 600px) {
+            .formulario-solicitud {
+                grid-template-columns: 1fr;
+            }
+            .solicitud-tarjeta {
+                padding: 20px;
+            }
+            .campo-completo {
+                grid-column: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <a class="logo" href="/">AdoptaPet</a>
+            <nav class="navegacion">
+                <a href="/">Inicio</a>
+                <a href="/mascotas.html">Mascotas</a>
+                <a href="/login.html">Iniciar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="solicitud-contenedor">
+        <section class="solicitud-tarjeta">
+            <h1 class="solicitud-titulo">¡Demos el primer paso! 🐾</h1>
+            <p class="solicitud-descripcion">
+                Completa tus datos y cuéntanos por qué quieres darle un hogar a esta mascota.
+            </p>
+
+            <div class="mascota-seleccionada" id="mascotaSeleccionada">
+                Cargando información de la mascota...
+            </div>
+
+            <form id="formularioSolicitud" class="formulario-solicitud">
+                <div class="campo-solicitud">
+                    <label for="nombre">Nombre completo</label>
+                    <input type="text" id="nombre" name="nombre" minlength="3" maxlength="100" required>
+                </div>
+
+                <div class="campo-solicitud">
+                    <label for="dni">DNI</label>
+                    <input type="text" id="dni" name="dni" inputmode="numeric" pattern="[0-9]{8}" maxlength="8" required>
+                </div>
+
+                <div class="campo-solicitud">
+                    <label for="telefono">Teléfono</label>
+                    <input type="tel" id="telefono" name="telefono" inputmode="numeric" pattern="[0-9]{9}" maxlength="9" required>
+                </div>
+
+                <div class="campo-solicitud">
+                    <label for="correo">Correo electrónico</label>
+                    <input type="email" id="correo" name="correo" maxlength="120" required>
+                </div>
+
+                <div class="campo-solicitud campo-completo">
+                    <label for="direccion">Dirección de residencia</label>
+                    <input type="text" id="direccion" name="direccion" minlength="5" maxlength="200" required>
+                </div>
+
+                <div class="campo-solicitud campo-completo">
+                    <label for="experiencia">¿Has tenido mascotas anteriormente?</label>
+                    <select id="experiencia" name="experiencia" required>
+                        <option value="">Selecciona una opción</option>
+                        <option value="si">Sí</option>
+                        <option value="no">No, sería mi primera mascota</option>
+                    </select>
+                </div>
+
+                <div class="campo-solicitud campo-completo">
+                    <label for="motivo">¿Por qué deseas adoptar esta mascota?</label>
+                    <textarea id="motivo" name="motivo" minlength="20" maxlength="1000" required></textarea>
+                </div>
+
+                <div class="campo-solicitud campo-completo">
+                    <label>
+                        <input type="checkbox" id="compromiso" required>
+                        Me comprometo a brindar cuidado, alimento y atención veterinaria a la mascota.
+                    </label>
+                </div>
+
+                <div class="campo-completo">
+                    <div class="botones-solicitud">
+                        <a class="boton-solicitud boton-volver" href="/mascotas.html">Volver a mascotas</a>
+                        <button class="boton-solicitud boton-enviar" type="submit">Enviar solicitud</button>
+                    </div>
+                    <div id="mensajeSolicitud" class="mensaje-solicitud" role="status"></div>
+                </div>
+            </form>
+        </section>
+    </main>
+
+    <footer class="pie-pagina">
+        <p>AdoptaPet · Pequeñas vidas, grandes historias 🐾</p>
+    </footer>
+
+    <script>
+        const parametros = new URLSearchParams(window.location.search);
+        const mascotaId = parametros.get("mascotaId");
+        const contenedorMascota = document.getElementById("mascotaSeleccionada");
+        const formulario = document.getElementById("formularioSolicitud");
+        const mensaje = document.getElementById("mensajeSolicitud");
+
+        async function cargarMascota() {
+            if (!mascotaId) {
+                contenedorMascota.textContent = "No se seleccionó una mascota. Vuelve al catálogo y elige una.";
+                formulario.querySelector('button[type="submit"]').disabled = true;
+                return;
+            }
+
+            try {
+                const respuesta = await fetch("/api/mascotas");
+
+                if (!respuesta.ok) {
+                    throw new Error("No se pudo consultar el catálogo.");
+                }
+
+                const mascotas = await respuesta.json();
+                const mascota = mascotas.find(item => String(item.id) === String(mascotaId));
+
+                if (!mascota) {
+                    contenedorMascota.textContent = "No encontramos esta mascota en el catálogo.";
+                    formulario.querySelector('button[type="submit"]').disabled = true;
+                    return;
+                }
+
+                contenedorMascota.textContent =
+                    "Mascota seleccionada: " + mascota.nombre +
+                    " · Especie: " + mascota.especie +
+                    " · Estado: " + mascota.estado;
+
+                if (String(mascota.estado).toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "") !== "disponible") {
+                    contenedorMascota.textContent += " · Verifica su disponibilidad antes de continuar.";
+                }
+            } catch (error) {
+                contenedorMascota.textContent = "No se pudo cargar la mascota. Intenta nuevamente.";
+            }
+        }
+
+        formulario.addEventListener("submit", async evento => {
+            evento.preventDefault();
+
+            const datos = {
+                mascotaId: Number(mascotaId),
+                nombre: document.getElementById("nombre").value.trim(),
+                dni: document.getElementById("dni").value.trim(),
+                telefono: document.getElementById("telefono").value.trim(),
+                correo: document.getElementById("correo").value.trim(),
+                direccion: document.getElementById("direccion").value.trim(),
+                experiencia: document.getElementById("experiencia").value,
+                motivo: document.getElementById("motivo").value.trim()
+            };
+
+            if (!/^\d{8}$/.test(datos.dni)) {
+                alert("El DNI debe contener exactamente 8 números.");
+                return;
+            }
+
+            if (!/^\d{9}$/.test(datos.telefono)) {
+                alert("El teléfono debe contener exactamente 9 números.");
+                return;
+            }
+
+            if (datos.motivo.length < 20) {
+                alert("Escribe un motivo de al menos 20 caracteres.");
+                return;
+            }
+
+            mensaje.style.display = "block";
+            mensaje.style.background = "#fff0df";
+            mensaje.style.color = "#754c24";
+            mensaje.textContent = "El formulario está validado, pero falta conectar el servicio de solicitudes con la base de datos. Tu solicitud todavía no se ha guardado.";
+        });
+
+        cargarMascota();
+    </script>
+</body>
+</html>
