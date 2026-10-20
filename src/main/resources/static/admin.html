@@ -1,0 +1,282 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administración | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .admin-contenedor {
+            max-width: 1100px;
+            margin: 35px auto;
+            padding: 20px;
+        }
+        .admin-titulo {
+            color: #438957;
+            text-align: center;
+            margin-bottom: 8px;
+        }
+        .admin-descripcion {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .admin-panel {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+            gap: 25px;
+        }
+        .admin-tarjeta {
+            background: white;
+            padding: 25px;
+            border-radius: 20px;
+            box-shadow: 0 8px 25px rgba(60, 80, 60, 0.09);
+        }
+        .admin-tarjeta h2 {
+            color: #438957;
+            margin-top: 0;
+        }
+        .admin-formulario {
+            display: grid;
+            gap: 15px;
+        }
+        .admin-campo {
+            display: flex;
+            flex-direction: column;
+            gap: 7px;
+        }
+        .admin-campo label {
+            color: #444;
+            font-weight: 600;
+        }
+        .admin-campo input,
+        .admin-campo select,
+        .admin-campo textarea {
+            width: 100%;
+            box-sizing: border-box;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 11px;
+            font: inherit;
+            background: #fffdfb;
+        }
+        .admin-campo textarea {
+            min-height: 90px;
+            resize: vertical;
+        }
+        .foto-contenedor {
+            border: 2px dashed #b6d4b5;
+            background: #f8fcf6;
+            border-radius: 15px;
+            padding: 18px;
+            text-align: center;
+        }
+        .foto-vista {
+            width: 100%;
+            max-height: 230px;
+            object-fit: contain;
+            border-radius: 12px;
+            margin-top: 12px;
+            display: none;
+        }
+        .boton-foto,
+        .admin-boton {
+            display: inline-block;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .boton-foto {
+            background: #e1efdf;
+            color: #315e3b;
+        }
+        .admin-boton {
+            background: #438957;
+            color: white;
+            width: 100%;
+        }
+        .admin-mensaje {
+            display: none;
+            padding: 12px;
+            border-radius: 10px;
+            background: #fff0df;
+            color: #754c24;
+            text-align: center;
+        }
+        .admin-enlaces {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 25px;
+        }
+        .admin-enlaces a {
+            color: #438957;
+            font-weight: bold;
+        }
+        @media (max-width: 750px) {
+            .admin-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="encabezado">
+        <div class="contenedor encabezado-contenido">
+            <a class="logo" href="/">AdoptaPet</a>
+            <nav class="navegacion">
+                <a href="/">Inicio</a>
+                <a href="/mascotas.html">Mascotas</a>
+                <a href="/login.html">Cerrar sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="admin-contenedor">
+        <h1 class="admin-titulo">Panel de administración 🐾</h1>
+        <p class="admin-descripcion">Gestiona las mascotas y las oportunidades de adopción.</p>
+
+        <div class="admin-panel">
+            <section class="admin-tarjeta">
+                <h2>Registrar nueva mascota</h2>
+
+                <form id="formularioMascota" class="admin-formulario">
+                    <div class="admin-campo">
+                        <label for="nombre">Nombre de la mascota</label>
+                        <input id="nombre" name="nombre" maxlength="100" required>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="especie">Especie</label>
+                        <select id="especie" name="especie" required>
+                            <option value="">Selecciona una especie</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="raza">Raza</label>
+                        <input id="raza" name="raza" maxlength="100" required>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="edad">Edad en años</label>
+                        <input id="edad" name="edad" type="number" min="0" max="40" required>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="sexo">Sexo</label>
+                        <select id="sexo" name="sexo" required>
+                            <option value="">Selecciona una opción</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                            <option value="Desconocido">Desconocido</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="estado">Estado</label>
+                        <select id="estado" name="estado" required>
+                            <option value="Disponible">Disponible</option>
+                            <option value="En proceso de adopción">En proceso de adopción</option>
+                            <option value="Adoptado">Adoptado</option>
+                        </select>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label for="descripcion">Descripción</label>
+                        <textarea id="descripcion" name="descripcion" maxlength="1000" required></textarea>
+                    </div>
+
+                    <div class="admin-campo">
+                        <label>Fotografía de la mascota</label>
+                        <div class="foto-contenedor">
+                            <p>Selecciona una imagen guardada en tu computadora.</p>
+                            <label for="foto" class="boton-foto">Elegir fotografía</label>
+                            <input id="foto" name="foto" type="file" accept="image/jpeg,image/png,image/webp" hidden>
+                            <img id="vistaPrevia" class="foto-vista" alt="Vista previa de la mascota">
+                            <p id="nombreFoto">Ninguna fotografía seleccionada</p>
+                        </div>
+                    </div>
+
+                    <button class="admin-boton" type="submit">Registrar mascota</button>
+                    <div id="mensajeMascota" class="admin-mensaje" role="status"></div>
+                </form>
+            </section>
+
+            <section class="admin-tarjeta">
+                <h2>Gestión de adopciones</h2>
+                <p>Desde este espacio se podrán revisar las solicitudes recibidas y gestionar su estado.</p>
+
+                <div class="foto-contenedor">
+                    <div style="font-size: 45px;">🐶 🐱</div>
+                    <h3>Solicitudes de adopción</h3>
+                    <p>El administrador podrá revisar los datos de los solicitantes y aceptar o rechazar las solicitudes.</p>
+                    <p id="estadoSolicitudes">La gestión quedará habilitada cuando se implemente el servicio de solicitudes.</p>
+                </div>
+
+                <div class="admin-enlaces">
+                    <a href="/mascotas.html">Ver catálogo de mascotas</a>
+                    <a href="/">Volver al inicio</a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="pie-pagina">
+        <p>AdoptaPet · Pequeñas vidas, grandes historias 🐾</p>
+    </footer>
+
+    <script>
+        const entradaFoto = document.getElementById("foto");
+        const vistaPrevia = document.getElementById("vistaPrevia");
+        const nombreFoto = document.getElementById("nombreFoto");
+        const formularioMascota = document.getElementById("formularioMascota");
+        const mensajeMascota = document.getElementById("mensajeMascota");
+
+        entradaFoto.addEventListener("change", () => {
+            const archivo = entradaFoto.files[0];
+
+            if (!archivo) {
+                vistaPrevia.style.display = "none";
+                nombreFoto.textContent = "Ninguna fotografía seleccionada";
+                return;
+            }
+
+            if (!["image/jpeg", "image/png", "image/webp"].includes(archivo.type)) {
+                alert("Selecciona una imagen JPG, PNG o WEBP.");
+                entradaFoto.value = "";
+                vistaPrevia.style.display = "none";
+                nombreFoto.textContent = "Ninguna fotografía seleccionada";
+                return;
+            }
+
+            if (archivo.size > 5 * 1024 * 1024) {
+                alert("La fotografía no debe superar los 5 MB.");
+                entradaFoto.value = "";
+                vistaPrevia.style.display = "none";
+                nombreFoto.textContent = "Ninguna fotografía seleccionada";
+                return;
+            }
+
+            vistaPrevia.src = URL.createObjectURL(archivo);
+            vistaPrevia.style.display = "block";
+            nombreFoto.textContent = archivo.name;
+        });
+
+        formularioMascota.addEventListener("submit", async evento => {
+            evento.preventDefault();
+
+            mensajeMascota.style.display = "block";
+            mensajeMascota.textContent = "La interfaz está lista, pero falta implementar el servicio para registrar mascotas y almacenar sus fotografías. No se han guardado los datos.";
+        });
+    </script>
+</body>
+</html>
