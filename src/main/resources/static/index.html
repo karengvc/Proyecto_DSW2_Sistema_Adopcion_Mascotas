@@ -5,254 +5,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#fff8f1">
+    <meta name="description" content="Encuentra a tu mejor amigo y dale un hogar lleno de amor.">
     <title>AdoptaPet | Pequeñas vidas, grandes historias</title>
-    <style>
-        :root {
-            --verde: #438957;
-            --verde-claro: #e1efdf;
-            --rosa: #f7a49b;
-            --crema: #fff8f1;
-            --texto: #30332e;
-            --blanco: #ffffff;
-        }
-
-        * {
-            box-sizing: border-box;
-        }
-
-        body {
-            margin: 0;
-            font-family: "Trebuchet MS", Arial, sans-serif;
-            color: var(--texto);
-            background: var(--crema);
-        }
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 20px;
-            padding: 18px 7%;
-            background: var(--blanco);
-            box-shadow: 0 3px 15px #4b493b12;
-        }
-
-        .logo {
-            color: var(--verde);
-            font-size: 25px;
-            font-weight: 900;
-        }
-
-        nav {
-            display: flex;
-            align-items: center;
-            gap: 22px;
-        }
-
-        nav a {
-            color: var(--texto);
-            text-decoration: none;
-            font-size: 14px;
-        }
-
-        nav a:hover {
-            color: var(--verde);
-        }
-
-        .boton {
-            display: inline-block;
-            padding: 13px 21px;
-            border: 0;
-            border-radius: 14px;
-            background: var(--verde);
-            color: white;
-            font-size: 15px;
-            font-weight: bold;
-            text-decoration: none;
-            cursor: pointer;
-            transition: transform .2s, background .2s;
-        }
-
-        .boton:hover {
-            background: #347247;
-            transform: translateY(-2px);
-        }
-
-        .boton-claro {
-            background: white;
-            color: var(--verde);
-            border: 1px solid #d9e8d5;
-        }
-
-        .portada {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            align-items: center;
-            gap: 35px;
-            padding: 65px 7%;
-            overflow: hidden;
-            background:
-                radial-gradient(circle at 10% 15%, #f9ded7 0 7%, transparent 7.5%),
-                radial-gradient(circle at 90% 90%, #dcebd8 0 9%, transparent 9.5%),
-                var(--crema);
-        }
-
-        .etiqueta {
-            display: inline-block;
-            padding: 9px 15px;
-            border-radius: 30px;
-            background: #fbe2dc;
-            color: #a45e55;
-            font-size: 13px;
-            font-weight: bold;
-        }
-
-        h1 {
-            margin: 22px 0 18px;
-            font-size: clamp(38px, 5vw, 59px);
-            line-height: 1.12;
-            letter-spacing: -2px;
-        }
-
-        h1 span {
-            color: var(--verde);
-        }
-
-        .descripcion {
-            max-width: 470px;
-            color: #66675f;
-            font-size: 18px;
-            line-height: 1.8;
-        }
-
-        .acciones {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 13px;
-            margin-top: 28px;
-        }
-
-        .foto-portada {
-            position: relative;
-        }
-
-        .foto-portada img {
-            display: block;
-            width: 100%;
-            height: 390px;
-            object-fit: cover;
-            border-radius: 48% 48% 25px 25px;
-            box-shadow: 0 18px 40px #5b493522;
-        }
-
-        .corazon {
-            position: absolute;
-            top: 22px;
-            right: -12px;
-            padding: 15px;
-            background: white;
-            border-radius: 20px;
-            font-size: 25px;
-            box-shadow: 0 8px 20px #33333312;
-        }
-
-        .beneficios {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 18px;
-            padding: 0 7% 60px;
-        }
-
-        .beneficio {
-            padding: 25px 18px;
-            text-align: center;
-            background: white;
-            border: 1px solid #f0e9df;
-            border-radius: 22px;
-            box-shadow: 0 8px 25px #5b49320b;
-        }
-
-        .beneficio .icono {
-            font-size: 35px;
-        }
-
-        .beneficio h3 {
-            margin: 12px 0 8px;
-        }
-
-        .beneficio p {
-            margin: 0;
-            color: #74746d;
-            font-size: 14px;
-            line-height: 1.6;
-        }
-
-        .titulo-seccion {
-            padding: 25px 7% 35px;
-            text-align: center;
-        }
-
-        .titulo-seccion h2 {
-            margin-bottom: 8px;
-            font-size: 34px;
-        }
-
-        .titulo-seccion p {
-            color: #77766f;
-        }
-
-        footer {
-            padding: 25px;
-            text-align: center;
-            background: white;
-            color: #73736d;
-            font-size: 13px;
-        }
-
-        @media (max-width: 760px) {
-            header {
-                padding: 16px 5%;
-                flex-wrap: wrap;
-            }
-
-            nav {
-                width: 100%;
-                gap: 15px;
-                flex-wrap: wrap;
-            }
-
-            .portada {
-                grid-template-columns: 1fr;
-                padding: 45px 6%;
-            }
-
-            .foto-portada img {
-                height: 300px;
-            }
-
-            .beneficios {
-                grid-template-columns: 1fr;
-                padding: 0 6% 40px;
-            }
-
-            h1 {
-                letter-spacing: -1px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="/css/styles.css">
 </head>
 <body>
-
 <header>
-    <a class="logo" href="#" style="text-decoration:none;">🐾 AdoptaPet</a>
-
+    <a class="logo" href="#inicio">🐾 AdoptaPet</a>
     <nav>
         <a href="#inicio">Inicio</a>
         <a href="#mascotas">Mascotas</a>
         <a href="#como-adoptar">¿Cómo adoptar?</a>
         <a href="#nosotros">Nosotros</a>
-        <a href="#login">Iniciar sesión</a>
-        <a class="boton" href="#registro">Registrarse ♡</a>
+        <a href="/login.html">Iniciar sesión</a>
+        <a class="boton" href="/registro.html">Registrarse ♡</a>
     </nav>
 </header>
 
@@ -260,27 +26,19 @@
     <section class="portada" id="inicio">
         <div>
             <span class="etiqueta">♡ Adopta, no compres ♡</span>
-
             <h1>Pequeñas vidas,<br><span>grandes historias</span></h1>
-
             <p class="descripcion">
-                Dale una segunda oportunidad a una mascota
-                y cambia su vida para siempre. Tu mejor amigo
-                podría estar esperándote aquí. 🐾
+                Dale una segunda oportunidad a una mascota y cambia su vida para siempre.
+                Tu mejor amigo podría estar esperándote aquí.
             </p>
-
             <div class="acciones">
                 <a class="boton" href="#mascotas">🐾 Ver mascotas</a>
-                <a class="boton boton-claro" href="#como-adoptar">
-                    ¿Cómo adoptar? ♡
-                </a>
+                <a class="boton boton-claro" href="#como-adoptar">¿Cómo adoptar? ♡</a>
             </div>
         </div>
-
         <div class="foto-portada">
-            <img
-                src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1000&q=85"
-                alt="Un perrito esperando encontrar una familia">
+            <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=1000&q=85"
+                 alt="Perritos que esperan encontrar un hogar">
             <div class="corazon">💗</div>
         </div>
     </section>
@@ -291,13 +49,11 @@
             <h3>Salvas una vida</h3>
             <p>Brindas un hogar lleno de amor a una mascota que lo necesita.</p>
         </article>
-
         <article class="beneficio">
             <div class="icono">🏡</div>
             <h3>Amor incondicional</h3>
             <p>Descubre la alegría de compartir tu vida con un nuevo amigo.</p>
         </article>
-
         <article class="beneficio">
             <div class="icono">🐾</div>
             <h3>Adopción responsable</h3>
@@ -308,14 +64,13 @@
     <section class="titulo-seccion" id="mascotas">
         <span class="etiqueta">Conoce a tu futuro compañero</span>
         <h2>Una familia te está esperando 🐶</h2>
-        <p>Pronto podrás conocer aquí a todas las mascotas disponibles.</p>
-        <a class="boton" href="#mascotas">Ver catálogo ♡</a>
+        <p>Estamos preparando el catálogo para que encuentres a tu compañero ideal.</p>
+        <a class="boton" href="/mascotas.html">Conocer mascotas ♡</a>
     </section>
 </main>
 
 <footer id="nosotros">
     Hecho con 💗 para quienes merecen un hogar. © AdoptaPet
 </footer>
-
 </body>
 </html>
