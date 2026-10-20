@@ -1,0 +1,278 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuestras mascotas | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .catalogo {
+            max-width: 1200px;
+            margin: auto;
+            padding: 45px 6%;
+        }
+
+        .encabezado-catalogo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .encabezado-catalogo h1 {
+            font-size: 42px;
+            letter-spacing: -1px;
+        }
+
+        .filtros {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin: 25px 0 35px;
+        }
+
+        .filtros input,
+        .filtros select {
+            padding: 13px 16px;
+            border: 1px solid #e7dfd4;
+            border-radius: 13px;
+            background: white;
+            font-size: 15px;
+        }
+
+        .tarjetas {
+            display: grid;
+            grid-template-columns: repeat(3, minmax(0, 1fr));
+            gap: 24px;
+        }
+
+        .mascota {
+            overflow: hidden;
+            background: white;
+            border: 1px solid #f0e9df;
+            border-radius: 22px;
+            box-shadow: 0 8px 25px #5b49320b;
+            transition: transform .2s;
+        }
+
+        .mascota:hover {
+            transform: translateY(-5px);
+        }
+
+        .mascota img {
+            width: 100%;
+            height: 220px;
+            object-fit: cover;
+            background: #e1efdf;
+        }
+
+        .mascota-contenido {
+            padding: 20px;
+        }
+
+        .mascota-contenido h2 {
+            margin: 0 0 10px;
+            font-size: 23px;
+        }
+
+        .datos-mascota {
+            color: #77766f;
+            font-size: 14px;
+            line-height: 1.8;
+        }
+
+        .estado {
+            display: inline-block;
+            margin: 10px 0 16px;
+            padding: 7px 12px;
+            border-radius: 20px;
+            background: #e1efdf;
+            color: #347247;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .estado-no-disponible {
+            background: #fbe2dc;
+            color: #a45e55;
+        }
+
+        .mensaje-catalogo {
+            grid-column: 1 / -1;
+            padding: 35px;
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            color: #74746d;
+        }
+
+        @media (max-width: 850px) {
+            .tarjetas {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 560px) {
+            .tarjetas {
+                grid-template-columns: 1fr;
+            }
+
+            .encabezado-catalogo h1 {
+                font-size: 34px;
+            }
+
+            .filtros input,
+            .filtros select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a class="logo" href="/index.html">🐾 AdoptaPet</a>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/mascotas.html">Mascotas</a>
+        <a href="/index.html#como-adoptar">¿Cómo adoptar?</a>
+        <a href="/login.html">Iniciar sesión</a>
+        <a class="boton" href="/registro.html">Registrarse ♡</a>
+    </nav>
+</header>
+
+<main class="catalogo">
+    <section class="encabezado-catalogo">
+        <span class="etiqueta">Amigos que buscan un hogar ♡</span>
+        <h1>Conoce a nuestras mascotas</h1>
+        <p class="descripcion" style="margin: auto;">
+            Cada una tiene una historia y mucho amor para compartir contigo.
+        </p>
+    </section>
+
+    <section class="filtros">
+        <input type="search" id="buscar" placeholder="🔎 Buscar por nombre...">
+        <select id="filtroEspecie">
+            <option value="">Todas las especies</option>
+            <option value="perro">Perros</option>
+            <option value="gato">Gatos</option>
+        </select>
+        <select id="filtroEstado">
+            <option value="">Todos los estados</option>
+            <option value="disponible">Disponibles</option>
+            <option value="no-disponible">No disponibles</option>
+        </select>
+    </section>
+
+    <section class="tarjetas" id="listaMascotas">
+        <div class="mensaje-catalogo">Cargando a nuestros pequeños amigos... 🐾</div>
+    </section>
+</main>
+
+<footer>
+    Hecho con 💗 para quienes merecen un hogar. © AdoptaPet
+</footer>
+
+<script>
+    const lista = document.getElementById("listaMascotas");
+    const buscar = document.getElementById("buscar");
+    const filtroEspecie = document.getElementById("filtroEspecie");
+    const filtroEstado = document.getElementById("filtroEstado");
+
+    let mascotas = [];
+
+    const fotos = {
+        perro: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=80",
+        gato: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=700&q=80",
+        otra: "https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=700&q=80"
+    };
+
+    function escapar(valor) {
+        return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;"
+        })[caracter]);
+    }
+
+    function renderizarMascotas() {
+        const texto = buscar.value.trim().toLowerCase();
+        const especieSeleccionada = filtroEspecie.value;
+        const estadoSeleccionado = filtroEstado.value;
+
+        const filtradas = mascotas.filter(mascota => {
+            const nombre = String(mascota.nombre ?? "").toLowerCase();
+            const especie = String(mascota.especie ?? "").toLowerCase();
+            const estado = String(mascota.estado ?? "").toLowerCase();
+            const disponible = ["disponible", "disponible para adopcion", "disponible para adopción"].includes(estado);
+            const coincideEstado = !estadoSeleccionado ||
+                (estadoSeleccionado === "disponible" && disponible) ||
+                (estadoSeleccionado === "no-disponible" && !disponible);
+
+            return nombre.includes(texto) &&
+                (!especieSeleccionada || especie.includes(especieSeleccionada)) &&
+                coincideEstado;
+        });
+
+        if (filtradas.length === 0) {
+            lista.innerHTML = '<div class="mensaje-catalogo">No encontramos mascotas con esos filtros. ¡Prueba con otra búsqueda! 💗</div>';
+            return;
+        }
+
+        lista.innerHTML = filtradas.map(mascota => {
+            const especie = String(mascota.especie ?? "").toLowerCase();
+            const estado = String(mascota.estado ?? "Sin estado");
+            const disponible = ["disponible", "disponible para adopcion", "disponible para adopción"].includes(estado.toLowerCase());
+            const foto = especie.includes("gato") ? fotos.gato :
+                especie.includes("perro") ? fotos.perro : fotos.otra;
+
+            return `
+                <article class="mascota">
+                    <img src="${foto}" alt="Mascota ${escapar(mascota.nombre)}" loading="lazy">
+                    <div class="mascota-contenido">
+                        <h2>${escapar(mascota.nombre)} 🐾</h2>
+                        <div class="datos-mascota">
+                            <div>Especie: ${escapar(mascota.especie || "No especificada")}</div>
+                            <div>Raza: ${escapar(mascota.raza || "No especificada")}</div>
+                            <div>Edad: ${escapar(mascota.edad ?? "No especificada")}</div>
+                            <div>Sexo: ${escapar(mascota.sexo || "No especificado")}</div>
+                        </div>
+                        <span class="estado ${disponible ? "" : "estado-no-disponible"}">
+                            ${escapar(estado)}
+                        </span>
+                        ${disponible
+                            ? `<button class="boton" type="button" onclick="solicitarAdopcion(${Number(mascota.id)})">Quiero adoptar ♡</button>`
+                            : ""}
+                    </div>
+                </article>`;
+        }).join("");
+    }
+
+    async function cargarMascotas() {
+        try {
+            const respuesta = await fetch("/api/mascotas");
+
+            if (!respuesta.ok) {
+                throw new Error("No se pudo consultar el catálogo");
+            }
+
+            mascotas = await respuesta.json();
+            renderizarMascotas();
+        } catch (error) {
+            lista.innerHTML = '<div class="mensaje-catalogo">No pudimos cargar las mascotas. Inténtalo nuevamente más tarde. 💗</div>';
+        }
+    }
+
+    function solicitarAdopcion(id) {
+        window.location.href = `/solicitud.html?mascotaId=${encodeURIComponent(id)}`;
+    }
+
+    buscar.addEventListener("input", renderizarMascotas);
+    filtroEspecie.addEventListener("change", renderizarMascotas);
+    filtroEstado.addEventListener("change", renderizarMascotas);
+
+    cargarMascotas();
+</script>
+</body>
+</html>
