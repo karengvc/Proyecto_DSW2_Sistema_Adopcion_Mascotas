@@ -1,0 +1,224 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iniciar sesión | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .pagina-login {
+            min-height: 80vh;
+            display: grid;
+            place-items: center;
+            padding: 40px 20px;
+            background: var(--crema);
+        }
+
+        .tarjeta-login {
+            width: 100%;
+            max-width: 450px;
+            padding: 36px;
+            background: white;
+            border: 1px solid #f0e9df;
+            border-radius: 26px;
+            box-shadow: 0 15px 40px #5b493215;
+        }
+
+        .icono-login {
+            width: 70px;
+            height: 70px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            background: #e1efdf;
+            border-radius: 22px;
+            font-size: 34px;
+        }
+
+        .tarjeta-login h1 {
+            margin: 8px 0;
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: -1px;
+        }
+
+        .subtitulo-login {
+            margin: 0 0 25px;
+            color: #77766f;
+            text-align: center;
+            line-height: 1.6;
+        }
+
+        .campo {
+            display: block;
+            margin-bottom: 19px;
+        }
+
+        .campo span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e7dfd4;
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .campo input:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 3px #43895720;
+        }
+
+        .mensaje {
+            display: none;
+            margin-bottom: 17px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .mensaje.error {
+            display: block;
+            background: #fbe2dc;
+            color: #923d35;
+        }
+
+        .mensaje.exito {
+            display: block;
+            background: #e1efdf;
+            color: #285e36;
+        }
+
+        .ancho-completo {
+            width: 100%;
+        }
+
+        .enlace-login {
+            margin-top: 23px;
+            text-align: center;
+            color: #77766f;
+            font-size: 14px;
+        }
+
+        .enlace-login a,
+        .volver {
+            color: var(--verde);
+            font-weight: bold;
+            text-decoration: none;
+        }
+
+        .volver {
+            display: block;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a class="logo" href="/index.html">🐾 AdoptaPet</a>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/mascotas.html">Mascotas</a>
+        <a href="/registro.html">Crear cuenta</a>
+    </nav>
+</header>
+
+<main class="pagina-login">
+    <section class="tarjeta-login">
+        <div class="icono-login">🐱</div>
+        <h1>¡Qué bueno verte!</h1>
+        <p class="subtitulo-login">
+            Inicia sesión para continuar tu aventura de adopción.
+        </p>
+
+        <div id="mensaje" class="mensaje" role="alert"></div>
+
+        <form id="formLogin">
+            <label class="campo">
+                <span>Nombre de usuario</span>
+                <input type="text" name="username" autocomplete="username"
+                       placeholder="Escribe tu usuario" required>
+            </label>
+
+            <label class="campo">
+                <span>Contraseña</span>
+                <input type="password" name="password" autocomplete="current-password"
+                       placeholder="Escribe tu contraseña" required>
+            </label>
+
+            <button class="boton ancho-completo" type="submit">Iniciar sesión ♡</button>
+        </form>
+
+        <p class="enlace-login">
+            ¿Todavía no tienes cuenta?
+            <a href="/registro.html">Regístrate aquí</a>
+        </p>
+        <a class="volver" href="/index.html">← Volver al inicio</a>
+    </section>
+</main>
+
+<script>
+    const formulario = document.getElementById("formLogin");
+    const mensaje = document.getElementById("mensaje");
+
+    function mostrarMensaje(texto, tipo) {
+        mensaje.textContent = texto;
+        mensaje.className = `mensaje ${tipo}`;
+    }
+
+    formulario.addEventListener("submit", async evento => {
+        evento.preventDefault();
+
+        const username = formulario.elements.username.value.trim();
+        const password = formulario.elements.password.value;
+        const boton = formulario.querySelector("button");
+
+        if (!username || !password) {
+            mostrarMensaje("Completa tu usuario y contraseña.", "error");
+            return;
+        }
+
+        boton.disabled = true;
+        boton.textContent = "Ingresando...";
+
+        try {
+            const respuesta = await fetch("/api/auth/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const datos = await respuesta.json();
+
+            if (!respuesta.ok) {
+                mostrarMensaje(datos.mensaje || "Usuario o contraseña incorrectos.", "error");
+                return;
+            }
+
+            mostrarMensaje("¡Bienvenido de nuevo! 💗", "exito");
+
+            setTimeout(() => {
+                window.location.href = "/mascotas.html";
+            }, 800);
+        } catch (error) {
+            mostrarMensaje("No se pudo conectar con el servidor. Inténtalo nuevamente.", "error");
+        } finally {
+            boton.disabled = false;
+            boton.textContent = "Iniciar sesión ♡";
+        }
+    });
+</script>
+</body>
+</html>
