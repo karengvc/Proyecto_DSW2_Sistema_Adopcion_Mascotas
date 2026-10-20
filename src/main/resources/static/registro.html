@@ -1,0 +1,255 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        .pagina-formulario {
+            min-height: 80vh;
+            display: grid;
+            place-items: center;
+            padding: 40px 20px;
+            background: var(--crema);
+        }
+
+        .tarjeta-formulario {
+            width: 100%;
+            max-width: 480px;
+            padding: 35px;
+            background: white;
+            border: 1px solid #f0e9df;
+            border-radius: 26px;
+            box-shadow: 0 15px 40px #5b493215;
+        }
+
+        .icono-formulario {
+            width: 68px;
+            height: 68px;
+            display: grid;
+            place-items: center;
+            margin: 0 auto 15px;
+            background: #fbe2dc;
+            border-radius: 22px;
+            font-size: 32px;
+        }
+
+        .tarjeta-formulario h1 {
+            margin: 8px 0;
+            text-align: center;
+            font-size: 32px;
+            letter-spacing: -1px;
+        }
+
+        .subtitulo-formulario {
+            margin: 0 0 25px;
+            text-align: center;
+            color: #77766f;
+            line-height: 1.6;
+        }
+
+        .campo {
+            display: block;
+            margin-bottom: 17px;
+        }
+
+        .campo span {
+            display: block;
+            margin-bottom: 8px;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .campo input {
+            width: 100%;
+            padding: 14px;
+            border: 1px solid #e7dfd4;
+            border-radius: 12px;
+            outline: none;
+            font-size: 15px;
+        }
+
+        .campo input:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 3px #43895720;
+        }
+
+        .ayuda {
+            display: block;
+            margin-top: 7px;
+            color: #77766f;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .mensaje {
+            display: none;
+            margin-bottom: 16px;
+            padding: 12px;
+            border-radius: 12px;
+            font-size: 14px;
+            line-height: 1.5;
+        }
+
+        .mensaje.error {
+            display: block;
+            background: #fbe2dc;
+            color: #923d35;
+        }
+
+        .mensaje.exito {
+            display: block;
+            background: #e1efdf;
+            color: #285e36;
+        }
+
+        .ancho-completo {
+            width: 100%;
+            margin-top: 5px;
+        }
+
+        .enlace-formulario {
+            margin-top: 22px;
+            text-align: center;
+            color: #77766f;
+            font-size: 14px;
+        }
+
+        .enlace-formulario a {
+            color: var(--verde);
+            font-weight: bold;
+        }
+
+        .volver {
+            display: block;
+            margin-top: 18px;
+            text-align: center;
+            color: var(--verde);
+            text-decoration: none;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <a class="logo" href="/index.html">🐾 AdoptaPet</a>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/mascotas.html">Mascotas</a>
+        <a href="/login.html">Iniciar sesión</a>
+    </nav>
+</header>
+
+<main class="pagina-formulario">
+    <section class="tarjeta-formulario">
+        <div class="icono-formulario">🐶</div>
+        <h1>¡Únete a la familia!</h1>
+        <p class="subtitulo-formulario">
+            Crea tu cuenta y empieza a encontrar a tu nuevo mejor amigo.
+        </p>
+
+        <div id="mensaje" class="mensaje" role="alert"></div>
+
+        <form id="formRegistro">
+            <label class="campo">
+                <span>Nombre de usuario</span>
+                <input type="text" name="username" minlength="4" maxlength="30"
+                       pattern="[A-Za-z0-9_.-]+" autocomplete="username"
+                       placeholder="Ej. amante_de_mascotas" required>
+                <small class="ayuda">Usa de 4 a 30 letras, números, puntos, guiones o guiones bajos.</small>
+            </label>
+
+            <label class="campo">
+                <span>Contraseña segura</span>
+                <input type="password" name="password" minlength="8"
+                       autocomplete="new-password"
+                       placeholder="Crea una contraseña segura" required>
+                <small class="ayuda">Mínimo 8 caracteres, con mayúscula, minúscula, número y símbolo.</small>
+            </label>
+
+            <label class="campo">
+                <span>Confirmar contraseña</span>
+                <input type="password" name="confirmar" minlength="8"
+                       autocomplete="new-password"
+                       placeholder="Escribe la contraseña otra vez" required>
+            </label>
+
+            <button class="boton ancho-completo" type="submit">Crear mi cuenta ♡</button>
+        </form>
+
+        <p class="enlace-formulario">
+            ¿Ya tienes cuenta? <a href="/login.html">Inicia sesión</a>
+        </p>
+        <a class="volver" href="/index.html">← Volver al inicio</a>
+    </section>
+</main>
+
+<script>
+    const formulario = document.getElementById("formRegistro");
+    const mensaje = document.getElementById("mensaje");
+
+    function mostrarMensaje(texto, tipo) {
+        mensaje.textContent = texto;
+        mensaje.className = `mensaje ${tipo}`;
+    }
+
+    formulario.addEventListener("submit", async evento => {
+        evento.preventDefault();
+
+        const username = formulario.elements.username.value.trim();
+        const password = formulario.elements.password.value;
+        const confirmar = formulario.elements.confirmar.value;
+
+        if (!/^[A-Za-z0-9_.-]{4,30}$/.test(username)) {
+            mostrarMensaje("El usuario debe tener entre 4 y 30 caracteres válidos.", "error");
+            return;
+        }
+
+        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])\S{8,}$/.test(password)) {
+            mostrarMensaje("La contraseña necesita 8 caracteres como mínimo, mayúscula, minúscula, número y símbolo.", "error");
+            return;
+        }
+
+        if (password !== confirmar) {
+            mostrarMensaje("Las contraseñas no coinciden. Revísalas e inténtalo otra vez.", "error");
+            return;
+        }
+
+        const boton = formulario.querySelector("button");
+        boton.disabled = true;
+        boton.textContent = "Creando cuenta...";
+
+        try {
+            const respuesta = await fetch("/api/auth/registro", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ username, password })
+            });
+
+            const datos = await respuesta.json();
+
+            if (!respuesta.ok) {
+                mostrarMensaje(datos.mensaje || "No se pudo crear la cuenta.", "error");
+                return;
+            }
+
+            mostrarMensaje("¡Tu cuenta está lista! Ahora puedes iniciar sesión. 💗", "exito");
+            formulario.reset();
+
+            setTimeout(() => {
+                window.location.href = "/login.html";
+            }, 1500);
+        } catch (error) {
+            mostrarMensaje("No se pudo conectar con el servidor. Inténtalo nuevamente.", "error");
+        } finally {
+            boton.disabled = false;
+            boton.textContent = "Crear mi cuenta ♡";
+        }
+    });
+</script>
+</body>
+</html>
