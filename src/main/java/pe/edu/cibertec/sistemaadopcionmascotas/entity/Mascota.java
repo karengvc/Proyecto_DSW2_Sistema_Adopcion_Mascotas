@@ -1,5 +1,7 @@
+
 package pe.edu.cibertec.sistemaadopcionmascotas.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -19,4 +21,10 @@ public class Mascota {
     private String sexo;
     private String descripcion;
     private String estado;
+
+    @JsonIgnore
+    @Column(columnDefinition = "bytea")
+    private byte[] foto;
+
+    private String tipoFoto;
 }

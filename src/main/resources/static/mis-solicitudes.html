@@ -1,0 +1,271 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mis solicitudes | AdoptaPet</title>
+    <link rel="stylesheet" href="/css/styles.css">
+    <style>
+        body{background:#fff8f1}
+        .contenedor{max-width:1100px;margin:40px auto;padding:0 22px}
+        .encabezado{text-align:center;margin-bottom:30px}
+        .etiqueta{color:#438957;font-weight:700;font-size:13px;text-transform:uppercase;letter-spacing:1.5px}
+        h1{font-size:clamp(30px,5vw,44px);margin:8px 0;color:#30332e}
+        .descripcion{color:#777;margin:0}
+        .resumen{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-bottom:25px}
+        .resumen-card{background:#fff;padding:20px;border:1px solid #eee5da;border-radius:16px}
+        .resumen-card span{display:block;color:#777;font-size:14px}
+        .resumen-card strong{display:block;color:#438957;font-size:30px;margin-top:5px}
+        .lista{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:18px}
+        .solicitud-card{background:#fff;border:1px solid #eee5da;border-radius:18px;padding:23px;box-shadow:0 8px 24px #3c503c08}
+        .solicitud-cabecera{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:15px}
+        .solicitud-card h2{font-size:21px;margin:0;color:#30332e}
+        .id-solicitud{font-size:12px;color:#888;margin-top:5px}
+        .estado{display:inline-block;border-radius:20px;padding:6px 11px;font-size:12px;font-weight:700;white-space:nowrap;background:#f5e9c9;color:#80611a}
+        .estado.aprobada,.estado.aprobado{background:#dff0df;color:#28683a}
+        .estado.rechazada,.estado.rechazado{background:#fbe2dc;color:#923d35}
+        .estado.pendiente{background:#f5e9c9;color:#80611a}
+        .detalles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;border-top:1px solid #eee5da;padding-top:16px}
+        .detalle span{display:block;font-size:12px;color:#888;margin-bottom:3px}
+        .detalle strong{font-size:14px;overflow-wrap:anywhere}
+        .motivo{margin-top:16px;background:#fff8f1;border-radius:12px;padding:13px;font-size:14px;color:#666}
+        .motivo strong{color:#444}
+        .sin-resultados,.aviso{background:#fff;border:1px solid #eee5da;border-radius:18px;padding:35px 22px;text-align:center}
+        .sin-resultados h2{margin:0 0 8px}
+        .sin-resultados p,.aviso p{color:#777}
+        .acciones{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:20px}
+        .boton{display:inline-flex;align-items:center;justify-content:center;text-decoration:none;border-radius:25px;padding:12px 20px;font-weight:700;font-size:14px}
+        .principal{background:#438957;color:#fff}
+        .secundario{background:#e1efdf;color:#315e3b}
+        .pie-nota{margin-top:22px;text-align:center;font-size:13px;color:#888}
+        @media(max-width:700px){.lista{grid-template-columns:1fr}.resumen{gap:8px}.resumen-card{padding:14px}.resumen-card strong{font-size:25px}.solicitud-cabecera{flex-direction:column}}
+        @media(max-width:420px){.resumen{grid-template-columns:1fr}.detalles{grid-template-columns:1fr}}
+    </style>
+</head>
+<body>
+<header>
+    <a class="logo" href="/index.html">AdoptaPet</a>
+    <nav>
+        <a href="/index.html">Inicio</a>
+        <a href="/mascotas.html">Mascotas</a>
+        <a href="/login.html" id="enlaceLogin">Iniciar sesión</a>
+    </nav>
+</header>
+
+<main class="contenedor">
+    <section class="encabezado">
+        <span class="etiqueta">Tu proceso de adopción</span>
+        <h1>Mis solicitudes</h1>
+        <p class="descripcion">Consulta el estado de tus solicitudes y sigue cada paso de tu proceso.</p>
+    </section>
+
+    <section class="resumen" id="resumen" hidden>
+        <article class="resumen-card">
+            <span>Total de solicitudes</span>
+            <strong id="total">0</strong>
+        </article>
+        <article class="resumen-card">
+            <span>Pendientes de revisión</span>
+            <strong id="pendientes">0</strong>
+        </article>
+        <article class="resumen-card">
+            <span>Aprobadas</span>
+            <strong id="aprobadas">0</strong>
+        </article>
+    </section>
+
+    <section id="contenido">
+        <div class="aviso"><p>Cargando tus solicitudes...</p></div>
+    </section>
+
+    <p class="pie-nota">Cada solicitud es revisada para promover una adopción responsable.</p>
+</main>
+
+<script>
+    const contenido = document.getElementById("contenido");
+    const resumen = document.getElementById("resumen");
+
+    function normalizar(valor) {
+        return String(valor ?? "").normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "").toLowerCase().trim();
+    }
+
+    function textoSeguro(valor, alternativo = "No especificado") {
+        if (valor === null || valor === undefined || String(valor).trim() === "") {
+            return alternativo;
+        }
+        return String(valor);
+    }
+
+    function crearElemento(etiqueta, clase, texto) {
+        const elemento = document.createElement(etiqueta);
+        if (clase) elemento.className = clase;
+        elemento.textContent = texto;
+        return elemento;
+    }
+
+    function mostrarAviso(titulo, descripcion, requiereLogin = false) {
+        contenido.replaceChildren();
+
+        const caja = crearElemento("div", "sin-resultados", "");
+        caja.appendChild(crearElemento("h2", "", titulo));
+        caja.appendChild(crearElemento("p", "", descripcion));
+
+        const acciones = crearElemento("div", "acciones", "");
+        const enlace = crearElemento("a", "boton principal",
+            requiereLogin ? "Iniciar sesión" : "Ver mascotas");
+        enlace.href = requiereLogin ? "/login.html" : "/mascotas.html";
+        acciones.appendChild(enlace);
+        caja.appendChild(acciones);
+        contenido.appendChild(caja);
+    }
+
+    function obtenerEstado(solicitud) {
+        return solicitud.estado ?? solicitud.estadoSolicitud ?? "Pendiente";
+    }
+
+    function crearTarjeta(solicitud) {
+        const tarjeta = crearElemento("article", "solicitud-card", "");
+        const cabecera = crearElemento("div", "solicitud-cabecera", "");
+        const titulo = crearElemento("div", "", "");
+
+        const nombreMascota =
+            solicitud.mascota?.nombre ??
+            solicitud.nombreMascota ??
+            solicitud.mascotaNombre ??
+            "Mascota solicitada";
+
+        titulo.appendChild(crearElemento("h2", "", nombreMascota));
+        titulo.appendChild(crearElemento("p", "id-solicitud",
+            "Solicitud #" + textoSeguro(solicitud.id, "—")));
+
+        const estado = obtenerEstado(solicitud);
+        const insignia = crearElemento("span", "estado", estado);
+        const estadoNormalizado = normalizar(estado);
+
+        if (estadoNormalizado.includes("aprob")) {
+            insignia.classList.add("aprobada");
+        } else if (estadoNormalizado.includes("rechaz")) {
+            insignia.classList.add("rechazada");
+        } else {
+            insignia.classList.add("pendiente");
+            insignia.textContent = estado || "Pendiente";
+        }
+
+        cabecera.append(titulo, insignia);
+        tarjeta.appendChild(cabecera);
+
+        const detalles = crearElemento("div", "detalles", "");
+
+        const campos = [
+            ["Fecha de solicitud", solicitud.fechaSolicitud ?? solicitud.fechaCreacion ?? solicitud.fecha],
+            ["Ciudad", solicitud.ciudad],
+            ["Teléfono", solicitud.telefono],
+            ["Edad", solicitud.edad],
+            ["Sexo", solicitud.sexo],
+            ["Experiencia con mascotas", solicitud.experiencia ?? solicitud.experienciaMascotas]
+        ];
+
+        campos.forEach(([etiqueta, valor]) => {
+            const detalle = crearElemento("div", "detalle", "");
+            detalle.appendChild(crearElemento("span", "", etiqueta));
+            detalle.appendChild(crearElemento("strong", "", textoSeguro(valor)));
+            detalles.appendChild(detalle);
+        });
+
+        tarjeta.appendChild(detalles);
+
+        const motivoTexto = solicitud.motivo ?? solicitud.motivoAdopcion;
+        if (motivoTexto) {
+            const motivo = crearElemento("div", "motivo", "");
+            motivo.appendChild(crearElemento("strong", "", "Motivo de adopción"));
+            motivo.appendChild(document.createTextNode("\n" + motivoTexto));
+            tarjeta.appendChild(motivo);
+        }
+
+        if (solicitud.observacionAdmin || solicitud.comentarioAdmin) {
+            const observacion = crearElemento("div", "motivo", "");
+            observacion.appendChild(crearElemento("strong", "", "Observación"));
+            observacion.appendChild(document.createTextNode(
+                "\n" + (solicitud.observacionAdmin || solicitud.comentarioAdmin)));
+            tarjeta.appendChild(observacion);
+        }
+
+        return tarjeta;
+    }
+
+    async function cargarSolicitudes() {
+        try {
+            const respuesta = await fetch("/api/solicitudes/mis-solicitudes", {
+                method: "GET",
+                credentials: "same-origin"
+            });
+
+            if (respuesta.status === 401) {
+                mostrarAviso(
+                    "Inicia sesión para continuar",
+                    "Necesitas acceder a tu cuenta para consultar tus solicitudes.",
+                    true
+                );
+                return;
+            }
+
+            if (!respuesta.ok) {
+                mostrarAviso(
+                    "No pudimos cargar tus solicitudes",
+                    "Inténtalo nuevamente. Si el problema continúa, revisa el servidor."
+                );
+                return;
+            }
+
+            const solicitudes = await respuesta.json();
+
+            if (!Array.isArray(solicitudes)) {
+                mostrarAviso(
+                    "No se pudo leer la información",
+                    "El servidor devolvió un formato inesperado."
+                );
+                return;
+            }
+
+            document.getElementById("enlaceLogin")?.remove();
+
+            if (solicitudes.length === 0) {
+                mostrarAviso(
+                    "Aún no tienes solicitudes",
+                    "Cuando solicites adoptar una mascota, podrás consultar aquí su estado."
+                );
+                return;
+            }
+
+            const pendientes = solicitudes.filter(s =>
+                normalizar(obtenerEstado(s)).includes("pendiente")
+            ).length;
+
+            const aprobadas = solicitudes.filter(s =>
+                normalizar(obtenerEstado(s)).includes("aprob")
+            ).length;
+
+            document.getElementById("total").textContent = solicitudes.length;
+            document.getElementById("pendientes").textContent = pendientes;
+            document.getElementById("aprobadas").textContent = aprobadas;
+            resumen.hidden = false;
+
+            const lista = crearElemento("div", "lista", "");
+            solicitudes.forEach(solicitud => lista.appendChild(crearTarjeta(solicitud)));
+
+            contenido.replaceChildren(lista);
+
+        } catch (error) {
+            mostrarAviso(
+                "No se pudo conectar con el servidor",
+                "Comprueba que la aplicación esté funcionando e inténtalo nuevamente."
+            );
+        }
+    }
+
+    cargarSolicitudes();
+</script>
+</body>
+</html>

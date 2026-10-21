@@ -55,7 +55,7 @@
             margin-bottom: 17px;
         }
 
-        .campo span {
+        .campo > span {
             display: block;
             margin-bottom: 8px;
             font-size: 14px;
@@ -76,12 +76,95 @@
             box-shadow: 0 0 0 3px #43895720;
         }
 
+        .entrada-con-ojo {
+            position: relative;
+        }
+
+        .entrada-con-ojo input {
+            padding-right: 48px;
+        }
+
+        .boton-ojo {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 36px;
+            height: 36px;
+            display: grid;
+            place-items: center;
+            padding: 0;
+            border: none;
+            background: transparent;
+            color: #77766f;
+            cursor: pointer;
+            font-size: 20px;
+        }
+
+        .boton-ojo:focus-visible {
+            outline: 2px solid var(--verde);
+            border-radius: 8px;
+        }
+
         .ayuda {
             display: block;
             margin-top: 7px;
             color: #77766f;
             font-size: 12px;
             line-height: 1.5;
+        }
+
+        .requisitos {
+            display: grid;
+            gap: 7px;
+            margin-top: 12px;
+            padding: 12px;
+            background: #faf8f4;
+            border-radius: 12px;
+        }
+
+        .requisito {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #923d35;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+
+        .requisito .estado-requisito {
+            width: 17px;
+            height: 17px;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            font-size: 11px;
+            font-weight: bold;
+        }
+
+        .requisito.cumplido {
+            color: #287443;
+        }
+
+        .requisito.cumplido .estado-requisito {
+            background: #e1efdf;
+        }
+
+        .estado-confirmacion {
+            display: block;
+            margin-top: 7px;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+
+        .estado-confirmacion.correcto {
+            color: #287443;
+        }
+
+        .estado-confirmacion.incorrecto {
+            color: #923d35;
         }
 
         .mensaje {
@@ -110,6 +193,11 @@
             margin-top: 5px;
         }
 
+        .ancho-completo:disabled {
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
         .enlace-formulario {
             margin-top: 22px;
             text-align: center;
@@ -130,6 +218,24 @@
             text-decoration: none;
             font-size: 14px;
         }
+
+        #seccionVerificacion {
+            display: none;
+        }
+
+        .oculto {
+            display: none !important;
+        }
+
+        @media (max-width: 520px) {
+            .tarjeta-formulario {
+                padding: 25px 20px;
+            }
+
+            .tarjeta-formulario h1 {
+                font-size: 28px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -145,12 +251,12 @@
 <main class="pagina-formulario">
     <section class="tarjeta-formulario">
         <div class="icono-formulario">🐶</div>
-        <h1>¡Únete a la familia!</h1>
-        <p class="subtitulo-formulario">
+        <h1 id="tituloFormulario">¡Únete a la familia!</h1>
+        <p class="subtitulo-formulario" id="subtituloFormulario">
             Crea tu cuenta y empieza a encontrar a tu nuevo mejor amigo.
         </p>
 
-        <div id="mensaje" class="mensaje" role="alert"></div>
+        <div id="mensaje" class="mensaje" role="alert" aria-live="polite"></div>
 
         <form id="formRegistro">
             <label class="campo">
@@ -162,24 +268,82 @@
             </label>
 
             <label class="campo">
-                <span>Contraseña segura</span>
-                <input type="password" name="password" minlength="8"
-                       autocomplete="new-password"
-                       placeholder="Crea una contraseña segura" required>
-                <small class="ayuda">Mínimo 8 caracteres, con mayúscula, minúscula, número y símbolo.</small>
+                <span>Correo electrónico</span>
+                <input type="email" name="correo" maxlength="120"
+                       autocomplete="email" placeholder="tucorreo@gmail.com" required>
+                <small class="ayuda">Te enviaremos un código para verificar tu cuenta.</small>
+            </label>
+
+            <div class="campo">
+                <label for="password"><span>Contraseña segura</span></label>
+                <div class="entrada-con-ojo">
+                    <input type="password" id="password" name="password" minlength="8"
+                           autocomplete="new-password"
+                           placeholder="Crea una contraseña segura" required>
+                    <button class="boton-ojo" type="button" data-objetivo="password"
+                            aria-label="Mostrar contraseña" aria-pressed="false">◉</button>
+                </div>
+
+                <div class="requisitos" aria-label="Requisitos de contraseña">
+                    <div class="requisito" data-regla="longitud">
+                        <span class="estado-requisito">×</span>
+                        <span>Al menos 8 caracteres</span>
+                    </div>
+                    <div class="requisito" data-regla="minuscula">
+                        <span class="estado-requisito">×</span>
+                        <span>Una letra minúscula</span>
+                    </div>
+                    <div class="requisito" data-regla="mayuscula">
+                        <span class="estado-requisito">×</span>
+                        <span>Una letra mayúscula</span>
+                    </div>
+                    <div class="requisito" data-regla="numero">
+                        <span class="estado-requisito">×</span>
+                        <span>Un número</span>
+                    </div>
+                    <div class="requisito" data-regla="simbolo">
+                        <span class="estado-requisito">×</span>
+                        <span>Un símbolo, por ejemplo !, @ o #</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="campo">
+                <label for="confirmar"><span>Confirmar contraseña</span></label>
+                <div class="entrada-con-ojo">
+                    <input type="password" id="confirmar" name="confirmar" minlength="8"
+                           autocomplete="new-password"
+                           placeholder="Escribe la contraseña otra vez" required>
+                    <button class="boton-ojo" type="button" data-objetivo="confirmar"
+                            aria-label="Mostrar confirmación de contraseña" aria-pressed="false">◉</button>
+                </div>
+                <small id="estadoConfirmacion" class="estado-confirmacion"></small>
+            </div>
+
+            <button class="boton ancho-completo" id="botonRegistro" type="submit" disabled>
+                Crear mi cuenta ♡
+            </button>
+        </form>
+
+        <form id="seccionVerificacion">
+            <label class="campo">
+                <span>Correo electrónico</span>
+                <input type="email" name="correoVerificacion" readonly required>
             </label>
 
             <label class="campo">
-                <span>Confirmar contraseña</span>
-                <input type="password" name="confirmar" minlength="8"
-                       autocomplete="new-password"
-                       placeholder="Escribe la contraseña otra vez" required>
+                <span>Código de verificación</span>
+                <input type="text" name="codigo" inputmode="numeric"
+                       pattern="[0-9]{6}" minlength="6" maxlength="6"
+                       autocomplete="one-time-code"
+                       placeholder="Escribe los 6 dígitos" required>
+                <small class="ayuda">Revisa tu bandeja de entrada y la carpeta de correo no deseado.</small>
             </label>
 
-            <button class="boton ancho-completo" type="submit">Crear mi cuenta ♡</button>
+            <button class="boton ancho-completo" type="submit">Verificar mi cuenta</button>
         </form>
 
-        <p class="enlace-formulario">
+        <p class="enlace-formulario" id="enlaceLogin">
             ¿Ya tienes cuenta? <a href="/login.html">Inicia sesión</a>
         </p>
         <a class="volver" href="/index.html">← Volver al inicio</a>
@@ -188,38 +352,118 @@
 
 <script>
     const formulario = document.getElementById("formRegistro");
+    const seccionVerificacion = document.getElementById("seccionVerificacion");
     const mensaje = document.getElementById("mensaje");
+    const tituloFormulario = document.getElementById("tituloFormulario");
+    const subtituloFormulario = document.getElementById("subtituloFormulario");
+    const enlaceLogin = document.getElementById("enlaceLogin");
+    const passwordInput = document.getElementById("password");
+    const confirmarInput = document.getElementById("confirmar");
+    const botonRegistro = document.getElementById("botonRegistro");
+    const estadoConfirmacion = document.getElementById("estadoConfirmacion");
 
     function mostrarMensaje(texto, tipo) {
         mensaje.textContent = texto;
-        mensaje.className = `mensaje ${tipo}`;
+        mensaje.className = "mensaje " + tipo;
     }
+
+    function evaluarReglas(password) {
+        return {
+            longitud: password.length >= 8,
+            minuscula: /[a-z]/.test(password),
+            mayuscula: /[A-Z]/.test(password),
+            numero: /\d/.test(password),
+            simbolo: /[^A-Za-z0-9\s]/.test(password)
+        };
+    }
+
+    function actualizarRequisitos() {
+        const reglas = evaluarReglas(passwordInput.value);
+        const todosCumplidos = Object.values(reglas).every(Boolean);
+
+        Object.entries(reglas).forEach(([nombre, cumplido]) => {
+            const elemento = document.querySelector(`[data-regla="${nombre}"]`);
+            elemento.classList.toggle("cumplido", cumplido);
+            elemento.querySelector(".estado-requisito").textContent = cumplido ? "✓" : "×";
+        });
+
+        actualizarConfirmacion();
+        botonRegistro.disabled = !(todosCumplidos &&
+            passwordInput.value === confirmarInput.value &&
+            confirmarInput.value.length > 0);
+
+        return todosCumplidos;
+    }
+
+    function actualizarConfirmacion() {
+        const password = passwordInput.value;
+        const confirmar = confirmarInput.value;
+
+        if (!confirmar) {
+            estadoConfirmacion.textContent = "";
+            estadoConfirmacion.className = "estado-confirmacion";
+            return false;
+        }
+
+        if (password === confirmar) {
+            estadoConfirmacion.textContent = "✓ Las contraseñas coinciden";
+            estadoConfirmacion.className = "estado-confirmacion correcto";
+            return true;
+        }
+
+        estadoConfirmacion.textContent = "× Las contraseñas no coinciden";
+        estadoConfirmacion.className = "estado-confirmacion incorrecto";
+        return false;
+    }
+
+    document.querySelectorAll(".boton-ojo").forEach(boton => {
+        boton.addEventListener("click", () => {
+            const campo = document.getElementById(boton.dataset.objetivo);
+            const mostrar = campo.type === "password";
+
+            campo.type = mostrar ? "text" : "password";
+            boton.setAttribute("aria-pressed", String(mostrar));
+            boton.setAttribute(
+                "aria-label",
+                mostrar ? "Ocultar contraseña" : "Mostrar contraseña"
+            );
+            boton.textContent = mostrar ? "◎" : "◉";
+        });
+    });
+
+    passwordInput.addEventListener("input", actualizarRequisitos);
+    confirmarInput.addEventListener("input", actualizarRequisitos);
 
     formulario.addEventListener("submit", async evento => {
         evento.preventDefault();
 
         const username = formulario.elements.username.value.trim();
-        const password = formulario.elements.password.value;
-        const confirmar = formulario.elements.confirmar.value;
+        const correo = formulario.elements.correo.value.trim();
+        const password = passwordInput.value;
+        const confirmar = confirmarInput.value;
 
         if (!/^[A-Za-z0-9_.-]{4,30}$/.test(username)) {
             mostrarMensaje("El usuario debe tener entre 4 y 30 caracteres válidos.", "error");
             return;
         }
 
-        if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z\d\s])\S{8,}$/.test(password)) {
-            mostrarMensaje("La contraseña necesita 8 caracteres como mínimo, mayúscula, minúscula, número y símbolo.", "error");
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(correo)) {
+            mostrarMensaje("Ingresa un correo electrónico válido.", "error");
+            return;
+        }
+
+        if (!actualizarRequisitos()) {
+            mostrarMensaje("Completa todos los requisitos de la contraseña.", "error");
             return;
         }
 
         if (password !== confirmar) {
-            mostrarMensaje("Las contraseñas no coinciden. Revísalas e inténtalo otra vez.", "error");
+            mostrarMensaje("Las contraseñas no coinciden.", "error");
             return;
         }
 
-        const boton = formulario.querySelector("button");
-        boton.disabled = true;
-        boton.textContent = "Creando cuenta...";
+        botonRegistro.disabled = true;
+        botonRegistro.textContent = "Registrando...";
 
         try {
             const respuesta = await fetch("/api/auth/registro", {
@@ -227,7 +471,7 @@
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ username, correo, password })
             });
 
             const datos = await respuesta.json();
@@ -237,17 +481,63 @@
                 return;
             }
 
-            mostrarMensaje("¡Tu cuenta está lista! Ahora puedes iniciar sesión. 💗", "exito");
-            formulario.reset();
+            formulario.classList.add("oculto");
+            seccionVerificacion.style.display = "block";
+            seccionVerificacion.elements.correoVerificacion.value = correo;
+            tituloFormulario.textContent = "Verifica tu correo";
+            subtituloFormulario.textContent = "Te enviamos un código de seis dígitos. Introdúcelo para activar tu cuenta.";
+            enlaceLogin.classList.add("oculto");
+            mostrarMensaje(datos.mensaje || "Revisa tu correo para obtener el código.", "exito");
+        } catch (error) {
+            mostrarMensaje("No se pudo conectar con el servidor. Inténtalo nuevamente.", "error");
+        } finally {
+            botonRegistro.textContent = "Crear mi cuenta ♡";
+            actualizarRequisitos();
+        }
+    });
+
+    seccionVerificacion.addEventListener("submit", async evento => {
+        evento.preventDefault();
+
+        const correo = seccionVerificacion.elements.correoVerificacion.value.trim();
+        const codigo = seccionVerificacion.elements.codigo.value.trim();
+        const boton = seccionVerificacion.querySelector("button");
+
+        if (!/^\d{6}$/.test(codigo)) {
+            mostrarMensaje("El código debe contener exactamente seis dígitos.", "error");
+            return;
+        }
+
+        boton.disabled = true;
+        boton.textContent = "Verificando...";
+
+        try {
+            const respuesta = await fetch("/api/auth/verificar", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ correo, codigo })
+            });
+
+            const datos = await respuesta.json();
+
+            if (!respuesta.ok) {
+                mostrarMensaje(datos.mensaje || "No se pudo verificar el correo.", "error");
+                return;
+            }
+
+            mostrarMensaje("¡Cuenta verificada correctamente! Ahora puedes iniciar sesión.", "exito");
+            seccionVerificacion.classList.add("oculto");
 
             setTimeout(() => {
                 window.location.href = "/login.html";
-            }, 1500);
+            }, 1800);
         } catch (error) {
             mostrarMensaje("No se pudo conectar con el servidor. Inténtalo nuevamente.", "error");
         } finally {
             boton.disabled = false;
-            boton.textContent = "Crear mi cuenta ♡";
+            boton.textContent = "Verificar mi cuenta";
         }
     });
 </script>

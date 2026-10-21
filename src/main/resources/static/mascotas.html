@@ -5,186 +5,548 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nuestras mascotas | AdoptaPet</title>
-    <link rel="stylesheet" href="/css/styles.css">
     <style>
-        .catalogo {
-            max-width: 1200px;
-            margin: auto;
-            padding: 45px 6%;
+        :root {
+            --verde: #438957;
+            --verde-oscuro: #306b43;
+            --verde-claro: #e5f0e1;
+            --crema: #fff8f1;
+            --texto: #30332e;
+            --suave: #74766e;
+            --borde: #eee5da;
+            --rosa: #fbe5df;
         }
 
-        .encabezado-catalogo {
-            text-align: center;
-            margin-bottom: 30px;
+        * { box-sizing: border-box; }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            margin: 0;
+            color: var(--texto);
+            background: var(--crema);
+            font-family: "Trebuchet MS", Arial, sans-serif;
+            line-height: 1.6;
         }
 
-        .encabezado-catalogo h1 {
-            font-size: 42px;
+        a { text-decoration: none; }
+
+        .encabezado {
+            min-height: 70px;
+            padding: 12px 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 20px;
+            background: white;
+            border-bottom: 1px solid var(--borde);
+        }
+
+        .logo {
+            color: var(--verde);
+            font-size: 27px;
+            font-weight: 900;
             letter-spacing: -1px;
         }
 
-        .filtros {
+        .navegacion {
             display: flex;
-            justify-content: center;
             flex-wrap: wrap;
-            gap: 12px;
-            margin: 25px 0 35px;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 12px 23px;
         }
 
-        .filtros input,
-        .filtros select {
-            padding: 13px 16px;
-            border: 1px solid #e7dfd4;
-            border-radius: 13px;
-            background: white;
+        .navegacion a {
+            color: var(--texto);
+            font-size: 13px;
+            font-weight: 700;
+        }
+
+        .navegacion a:hover { color: var(--verde); }
+
+        .navegacion .nav-boton {
+            padding: 11px 18px;
+            border-radius: 12px;
+            color: white;
+            background: var(--verde);
+        }
+
+        .contenedor {
+            max-width: 1500px;
+            margin: auto;
+            padding: 0 4%;
+        }
+
+        .catalogo-portada {
+            position: relative;
+            min-height: 225px;
+            display: grid;
+            grid-template-columns: 0.85fr 1.15fr;
+            align-items: center;
+            gap: 30px;
+            padding-top: 28px;
+            padding-bottom: 28px;
+            overflow: hidden;
+        }
+
+        .catalogo-portada::before {
+            position: absolute;
+            content: "";
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: #f9e0d8;
+            top: -100px;
+            left: -110px;
+            z-index: -1;
+        }
+
+        .etiqueta {
+            display: inline-block;
+            padding: 7px 14px;
+            border-radius: 30px;
+            background: var(--rosa);
+            background: #fbe5df;
+            color: #a2574d;
+            font-size: 12px;
+            font-weight: 800;
+        }
+
+        .catalogo-portada h1 {
+            margin: 12px 0 8px;
+            font-size: clamp(35px, 4vw, 53px);
+            line-height: 1.12;
+            letter-spacing: -1.8px;
+        }
+
+        .catalogo-portada h1 span { color: var(--verde); }
+
+        .catalogo-portada p {
+            max-width: 470px;
+            margin: 0;
+            color: var(--suave);
             font-size: 15px;
         }
 
-        .tarjetas {
+        .portada-imagen {
+            height: 205px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .portada-imagen img {
+            width: 78%;
+            height: 205px;
+            object-fit: cover;
+            object-position: center;
+            border-radius: 110px 110px 22px 22px;
+        }
+
+        .mensaje-portada {
+            position: absolute;
+            right: 0;
+            top: 22px;
+            padding: 14px 18px;
+            border-radius: 18px;
+            background: white;
+            color: #a2574d;
+            font-weight: 800;
+            box-shadow: 0 8px 25px #493b2b12;
+        }
+
+        .zona-catalogo {
+            display: grid;
+            grid-template-columns: 245px minmax(0, 1fr);
+            align-items: start;
+            gap: 24px;
+            padding-bottom: 60px;
+        }
+
+        .panel-filtros {
+            padding: 22px;
+            background: white;
+            border: 1px solid var(--borde);
+            border-radius: 20px;
+            box-shadow: 0 8px 25px #493b2b08;
+        }
+
+        .panel-filtros h2 {
+            margin: 0 0 20px;
+            font-size: 19px;
+        }
+
+        .grupo-filtro { margin-bottom: 21px; }
+
+        .grupo-filtro h3 {
+            margin: 0 0 10px;
+            font-size: 14px;
+        }
+
+        .opciones {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .opcion {
+            padding: 8px 13px;
+            border: 1px solid #e4e4df;
+            border-radius: 25px;
+            color: var(--texto);
+            background: white;
+            font: inherit;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .opcion.activa,
+        .opcion:hover {
+            border-color: var(--verde);
+            color: white;
+            background: var(--verde);
+        }
+
+        .campo-filtro {
+            display: block;
+            margin-bottom: 9px;
+            color: var(--suave);
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .campo-filtro input {
+            margin-right: 7px;
+            accent-color: var(--verde);
+        }
+
+        .filtro-select,
+        .buscador {
+            width: 100%;
+            min-width: 0;
+            padding: 12px 14px;
+            border: 1px solid #e4e1dc;
+            border-radius: 12px;
+            background: white;
+            color: var(--texto);
+            font: inherit;
+            font-size: 13px;
+            outline: none;
+        }
+
+        .filtro-select:focus,
+        .buscador:focus {
+            border-color: var(--verde);
+            box-shadow: 0 0 0 3px #43895720;
+        }
+
+        .limpiar {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #d8e7d3;
+            border-radius: 12px;
+            background: var(--verde-claro);
+            color: var(--verde-oscuro);
+            font: inherit;
+            font-weight: 800;
+            cursor: pointer;
+        }
+
+        .catalogo-principal { min-width: 0; }
+
+        .barra-busqueda {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) 175px;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .resultados {
+            margin: 0 0 14px;
+            color: var(--suave);
+            font-size: 13px;
+        }
+
+        .mascotas-grid {
             display: grid;
             grid-template-columns: repeat(3, minmax(0, 1fr));
-            gap: 24px;
+            gap: 17px;
         }
 
-        .mascota {
+        .mascota-card {
+            min-width: 0;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
             background: white;
-            border: 1px solid #f0e9df;
-            border-radius: 22px;
-            box-shadow: 0 8px 25px #5b49320b;
-            transition: transform .2s;
+            border: 1px solid var(--borde);
+            border-radius: 18px;
+            box-shadow: 0 7px 22px #493b2b08;
+            transition: transform .2s, box-shadow .2s;
         }
 
-        .mascota:hover {
-            transform: translateY(-5px);
+        .mascota-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 30px #493b2b14;
         }
 
-        .mascota img {
+        .foto-contenedor {
+            height: 190px;
+            position: relative;
+            background: var(--verde-claro);
+        }
+
+        .mascota-foto {
+            display: block;
             width: 100%;
-            height: 220px;
+            height: 100%;
             object-fit: cover;
-            background: #e1efdf;
         }
 
-        .mascota-contenido {
-            padding: 20px;
-        }
-
-        .mascota-contenido h2 {
-            margin: 0 0 10px;
-            font-size: 23px;
-        }
-
-        .datos-mascota {
-            color: #77766f;
-            font-size: 14px;
-            line-height: 1.8;
+        .etiqueta-especie {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            padding: 6px 13px;
+            border-radius: 30px;
+            background: white;
+            color: var(--verde-oscuro);
+            font-size: 12px;
+            font-weight: 800;
         }
 
         .estado {
             display: inline-block;
-            margin: 10px 0 16px;
-            padding: 7px 12px;
-            border-radius: 20px;
-            background: #e1efdf;
-            color: #347247;
+            align-self: flex-start;
+            padding: 5px 10px;
+            border-radius: 25px;
+            color: #2f6b42;
+            background: var(--verde-claro);
+            font-size: 11px;
+            font-weight: 800;
+        }
+
+        .estado.proceso {
+            color: #925c31;
+            background: #fff0d9;
+        }
+
+        .estado.adoptado {
+            color: #696969;
+            background: #eeeeec;
+        }
+
+        .mascota-contenido {
+            display: flex;
+            flex: 1;
+            flex-direction: column;
+            padding: 15px;
+        }
+
+        .mascota-contenido h2 {
+            margin: 9px 0 4px;
+            font-size: 19px;
+            line-height: 1.3;
+        }
+
+        .datos {
+            margin: 0 0 9px;
+            color: var(--suave);
             font-size: 12px;
-            font-weight: bold;
+            line-height: 1.7;
         }
 
-        .estado-no-disponible {
-            background: #fbe2dc;
-            color: #a45e55;
+        .descripcion {
+            flex: 1;
+            margin: 0 0 14px;
+            color: #65675f;
+            font-size: 12px;
+            line-height: 1.7;
         }
 
-        .mensaje-catalogo {
-            grid-column: 1 / -1;
-            padding: 35px;
+        .mascota-boton {
+            display: block;
+            width: 100%;
+            padding: 11px;
+            border: 0;
+            border-radius: 12px;
+            background: var(--verde-claro);
+            color: var(--verde-oscuro);
+            font: inherit;
+            font-size: 13px;
+            font-weight: 800;
             text-align: center;
+            cursor: pointer;
+        }
+
+        .mascota-boton:hover {
+            color: white;
+            background: var(--verde);
+        }
+
+        .mascota-boton.deshabilitado {
+            color: #777;
+            background: #eeeeec;
+            cursor: not-allowed;
+        }
+
+        .catalogo-mensaje {
+            grid-column: 1 / -1;
+            padding: 35px 20px;
+            border: 1px solid var(--borde);
+            border-radius: 18px;
             background: white;
-            border-radius: 20px;
-            color: #74746d;
+            color: var(--suave);
+            text-align: center;
         }
 
-        @media (max-width: 850px) {
-            .tarjetas {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-            }
+        footer {
+            padding: 25px;
+            border-top: 1px solid var(--borde);
+            background: white;
+            color: var(--suave);
+            text-align: center;
+            font-size: 12px;
         }
 
-        @media (max-width: 560px) {
-            .tarjetas {
-                grid-template-columns: 1fr;
-            }
+        @media (max-width: 1100px) {
+            .zona-catalogo { grid-template-columns: 215px minmax(0, 1fr); gap: 17px; }
+            .mascotas-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+            .foto-contenedor { height: 205px; }
+        }
 
-            .encabezado-catalogo h1 {
-                font-size: 34px;
-            }
+        @media (max-width: 700px) {
+            .encabezado { align-items: flex-start; flex-direction: column; }
+            .navegacion { justify-content: flex-start; gap: 12px 16px; }
+            .catalogo-portada { grid-template-columns: 1fr; gap: 15px; }
+            .portada-imagen { height: 190px; }
+            .portada-imagen img { width: 100%; height: 190px; border-radius: 80px 80px 18px 18px; }
+            .mensaje-portada { right: 8px; top: 8px; font-size: 12px; }
+            .zona-catalogo { grid-template-columns: 1fr; }
+            .barra-busqueda { grid-template-columns: 1fr; }
+            .mascotas-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+            .foto-contenedor { height: 155px; }
+            .mascota-contenido { padding: 12px; }
+            .mascota-contenido h2 { font-size: 16px; }
+        }
 
-            .filtros input,
-            .filtros select {
-                width: 100%;
-            }
+        @media (max-width: 420px) {
+            .mascotas-grid { grid-template-columns: 1fr; }
+            .foto-contenedor { height: 220px; }
         }
     </style>
 </head>
 <body>
-<header>
-    <a class="logo" href="/index.html">🐾 AdoptaPet</a>
-    <nav>
+<header class="encabezado">
+    <a class="logo" href="/index.html">AdoptaPet</a>
+    <nav class="navegacion" id="menuPrincipal">
         <a href="/index.html">Inicio</a>
         <a href="/mascotas.html">Mascotas</a>
         <a href="/index.html#como-adoptar">¿Cómo adoptar?</a>
-        <a href="/login.html">Iniciar sesión</a>
-        <a class="boton" href="/registro.html">Registrarse ♡</a>
+        <a href="/index.html#nosotros">Quiénes somos</a>
+        <a href="/login.html" id="enlaceLogin">Iniciar sesión</a>
+        <a class="nav-boton" href="/registro.html" id="enlaceRegistro">Registrarse</a>
     </nav>
 </header>
 
-<main class="catalogo">
-    <section class="encabezado-catalogo">
-        <span class="etiqueta">Amigos que buscan un hogar ♡</span>
-        <h1>Conoce a nuestras mascotas</h1>
-        <p class="descripcion" style="margin: auto;">
-            Cada una tiene una historia y mucho amor para compartir contigo.
-        </p>
+<main>
+    <section class="catalogo-portada contenedor">
+        <div>
+            <span class="etiqueta">Adopta, no compres</span>
+            <h1>Nuestras <span>mascotas</span></h1>
+            <p>Conoce a los peluditos que buscan una familia. Cada uno tiene una historia y está esperando una nueva oportunidad.</p>
+        </div>
+        <div class="portada-imagen">
+            <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=900&q=85"
+                 alt="Perros y gatos juntos">
+            <span class="mensaje-portada">Adopta,<br>no compres</span>
+        </div>
     </section>
 
-    <section class="filtros">
-        <input type="search" id="buscar" placeholder="🔎 Buscar por nombre...">
-        <select id="filtroEspecie">
-            <option value="">Todas las especies</option>
-            <option value="perro">Perros</option>
-            <option value="gato">Gatos</option>
-        </select>
-        <select id="filtroEstado">
-            <option value="">Todos los estados</option>
-            <option value="disponible">Disponibles</option>
-            <option value="no-disponible">No disponibles</option>
-        </select>
-    </section>
+    <section class="zona-catalogo contenedor">
+        <aside class="panel-filtros">
+            <h2>Filtrar mascotas</h2>
 
-    <section class="tarjetas" id="listaMascotas">
-        <div class="mensaje-catalogo">Cargando a nuestros pequeños amigos... 🐾</div>
+            <div class="grupo-filtro">
+                <h3>Tipo de mascota</h3>
+                <div class="opciones" id="opcionesEspecie">
+                    <button class="opcion activa" type="button" data-especie="">Todos</button>
+                    <button class="opcion" type="button" data-especie="perro">Perros</button>
+                    <button class="opcion" type="button" data-especie="gato">Gatos</button>
+                </div>
+            </div>
+
+            <div class="grupo-filtro">
+                <h3>Estado</h3>
+                <label class="campo-filtro"><input type="checkbox" name="estado" value="disponible"> Disponible</label>
+                <label class="campo-filtro"><input type="checkbox" name="estado" value="en proceso de adopcion"> En proceso</label>
+                <label class="campo-filtro"><input type="checkbox" name="estado" value="adoptado"> Adoptado</label>
+            </div>
+
+            <div class="grupo-filtro">
+                <h3>Sexo</h3>
+                <select class="filtro-select" id="filtroSexo">
+                    <option value="">Todos</option>
+                    <option value="macho">Macho</option>
+                    <option value="hembra">Hembra</option>
+                </select>
+            </div>
+
+            <div class="grupo-filtro">
+                <h3>Edad</h3>
+                <select class="filtro-select" id="filtroEdad">
+                    <option value="">Todas las edades</option>
+                    <option value="cachorro">Cachorro (menos de 1 año)</option>
+                    <option value="joven">Joven (1 a 3 años)</option>
+                    <option value="adulto">Adulto (más de 3 años)</option>
+                </select>
+            </div>
+
+            <button class="limpiar" id="limpiarFiltros" type="button">Limpiar filtros</button>
+        </aside>
+
+        <div class="catalogo-principal">
+            <div class="barra-busqueda">
+                <input class="buscador" type="search" id="buscarNombre"
+                       placeholder="Buscar por nombre, raza o descripción...">
+                <select class="filtro-select" id="ordenar">
+                    <option value="nombre">Ordenar por nombre</option>
+                    <option value="edad">Ordenar por edad</option>
+                </select>
+            </div>
+
+            <p class="resultados" id="contador">Cargando mascotas...</p>
+            <section id="catalogoMascotas" class="mascotas-grid">
+                <div class="catalogo-mensaje">Cargando mascotas...</div>
+            </section>
+        </div>
     </section>
 </main>
 
 <footer>
-    Hecho con 💗 para quienes merecen un hogar. © AdoptaPet
+    <strong>AdoptaPet</strong> · Promoviendo la adopción responsable.
 </footer>
 
 <script>
-    const lista = document.getElementById("listaMascotas");
-    const buscar = document.getElementById("buscar");
-    const filtroEspecie = document.getElementById("filtroEspecie");
-    const filtroEstado = document.getElementById("filtroEstado");
+    const contenedor = document.getElementById("catalogoMascotas");
+    const buscarNombre = document.getElementById("buscarNombre");
+    const filtroSexo = document.getElementById("filtroSexo");
+    const filtroEdad = document.getElementById("filtroEdad");
+    const ordenar = document.getElementById("ordenar");
+    const contador = document.getElementById("contador");
 
     let mascotas = [];
+    let especieSeleccionada = "";
 
-    const fotos = {
-        perro: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=700&q=80",
-        gato: "https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=700&q=80",
-        otra: "https://images.unsplash.com/photo-1450778869180-41d0601e046e?auto=format&fit=crop&w=700&q=80"
-    };
+    function normalizar(valor) {
+        return String(valor ?? "")
+            .toLowerCase()
+            .normalize("NFD")
+            .replace(/[\u0300-\u036f]/g, "")
+            .trim();
+    }
 
     function escapar(valor) {
         return String(valor ?? "").replace(/[&<>"']/g, caracter => ({
@@ -196,83 +558,182 @@
         })[caracter]);
     }
 
-    function renderizarMascotas() {
-        const texto = buscar.value.trim().toLowerCase();
-        const especieSeleccionada = filtroEspecie.value;
-        const estadoSeleccionado = filtroEstado.value;
+    function estadoClase(estado) {
+        const valor = normalizar(estado);
+        if (valor === "adoptado") return "adoptado";
+        if (valor.includes("proceso")) return "proceso";
+        return "";
+    }
 
-        const filtradas = mascotas.filter(mascota => {
-            const nombre = String(mascota.nombre ?? "").toLowerCase();
-            const especie = String(mascota.especie ?? "").toLowerCase();
-            const estado = String(mascota.estado ?? "").toLowerCase();
-            const disponible = ["disponible", "disponible para adopcion", "disponible para adopción"].includes(estado);
-            const coincideEstado = !estadoSeleccionado ||
-                (estadoSeleccionado === "disponible" && disponible) ||
-                (estadoSeleccionado === "no-disponible" && !disponible);
+    function crearTarjeta(mascota) {
+        const nombre = escapar(mascota.nombre || "Sin nombre");
+        const especie = escapar(mascota.especie || "No especificada");
+        const raza = escapar(mascota.raza || "Mestizo");
+        const sexo = escapar(mascota.sexo || "No especificado");
+        const edadNumero = Number(mascota.edad);
+        const edad = Number.isFinite(edadNumero)
+            ? edadNumero === 1 ? "1 año" : `${edadNumero} años`
+            : "Edad no especificada";
+        const estadoOriginal = mascota.estado || "Sin estado";
+        const estado = escapar(estadoOriginal);
+        const descripcion = escapar(mascota.descripcion || "Esta mascota espera encontrar una familia responsable.");
+        const disponible = normalizar(estadoOriginal) === "disponible";
+        const especieNormalizada = normalizar(mascota.especie);
+        const enlace = disponible
+            ? `<a class="mascota-boton" href="/solicitud.html?mascotaId=${encodeURIComponent(mascota.id)}">Ver detalles y adoptar</a>`
+            : `<span class="mascota-boton deshabilitado">No disponible</span>`;
 
-            return nombre.includes(texto) &&
-                (!especieSeleccionada || especie.includes(especieSeleccionada)) &&
-                coincideEstado;
+        const foto = `/api/mascotas/${encodeURIComponent(mascota.id)}/foto`;
+        const fondo = especieNormalizada === "gato" ? "#fbe5df" : "#e5f0e1";
+
+        return `
+            <article class="mascota-card">
+                <div class="foto-contenedor" style="background:${fondo}">
+                    <img class="mascota-foto"
+                         src="${foto}"
+                         alt="Fotografía de ${nombre}"
+                         loading="lazy"
+                         onerror="this.onerror=null;this.style.display='none';this.parentElement.style.background='${fondo}'">
+                    <span class="etiqueta-especie">${especie}</span>
+                </div>
+                <div class="mascota-contenido">
+                    <span class="estado ${estadoClase(estadoOriginal)}">${estado}</span>
+                    <h2>${nombre}</h2>
+                    <p class="datos">${raza} · ${edad} · ${sexo}</p>
+                    <p class="descripcion">${descripcion}</p>
+                    ${enlace}
+                </div>
+            </article>
+        `;
+    }
+
+    function mostrarMascotas() {
+        const busqueda = normalizar(buscarNombre.value);
+        const sexoBuscado = normalizar(filtroSexo.value);
+        const edadBuscada = filtroEdad.value;
+        const estadosMarcados = [...document.querySelectorAll('input[name="estado"]:checked')]
+            .map(elemento => normalizar(elemento.value));
+
+        let filtradas = mascotas.filter(mascota => {
+            const texto = normalizar([
+                mascota.nombre,
+                mascota.especie,
+                mascota.raza,
+                mascota.descripcion
+            ].join(" "));
+
+            const especie = normalizar(mascota.especie);
+            const estado = normalizar(mascota.estado);
+            const sexo = normalizar(mascota.sexo);
+            const edad = Number(mascota.edad);
+
+            const coincideTexto = texto.includes(busqueda);
+            const coincideEspecie = !especieSeleccionada || especie === especieSeleccionada;
+            const coincideEstado = estadosMarcados.length === 0 || estadosMarcados.includes(estado);
+            const coincideSexo = !sexoBuscado || sexo === sexoBuscado;
+
+            let coincideEdad = true;
+            if (edadBuscada === "cachorro") coincideEdad = Number.isFinite(edad) && edad < 1;
+            if (edadBuscada === "joven") coincideEdad = Number.isFinite(edad) && edad >= 1 && edad <= 3;
+            if (edadBuscada === "adulto") coincideEdad = Number.isFinite(edad) && edad > 3;
+
+            return coincideTexto && coincideEspecie && coincideEstado && coincideSexo && coincideEdad;
         });
 
+        if (ordenar.value === "nombre") {
+            filtradas.sort((a, b) => String(a.nombre || "").localeCompare(String(b.nombre || ""), "es"));
+        } else {
+            filtradas.sort((a, b) => Number(a.edad || 0) - Number(b.edad || 0));
+        }
+
+        contador.textContent = `${filtradas.length} ${filtradas.length === 1 ? "mascota encontrada" : "mascotas encontradas"}`;
+
         if (filtradas.length === 0) {
-            lista.innerHTML = '<div class="mensaje-catalogo">No encontramos mascotas con esos filtros. ¡Prueba con otra búsqueda! 💗</div>';
+            contenedor.innerHTML = '<div class="catalogo-mensaje">No encontramos mascotas con esos filtros. Prueba con otra búsqueda.</div>';
             return;
         }
 
-        lista.innerHTML = filtradas.map(mascota => {
-            const especie = String(mascota.especie ?? "").toLowerCase();
-            const estado = String(mascota.estado ?? "Sin estado");
-            const disponible = ["disponible", "disponible para adopcion", "disponible para adopción"].includes(estado.toLowerCase());
-            const foto = especie.includes("gato") ? fotos.gato :
-                especie.includes("perro") ? fotos.perro : fotos.otra;
-
-            return `
-                <article class="mascota">
-                    <img src="${foto}" alt="Mascota ${escapar(mascota.nombre)}" loading="lazy">
-                    <div class="mascota-contenido">
-                        <h2>${escapar(mascota.nombre)} 🐾</h2>
-                        <div class="datos-mascota">
-                            <div>Especie: ${escapar(mascota.especie || "No especificada")}</div>
-                            <div>Raza: ${escapar(mascota.raza || "No especificada")}</div>
-                            <div>Edad: ${escapar(mascota.edad ?? "No especificada")}</div>
-                            <div>Sexo: ${escapar(mascota.sexo || "No especificado")}</div>
-                        </div>
-                        <span class="estado ${disponible ? "" : "estado-no-disponible"}">
-                            ${escapar(estado)}
-                        </span>
-                        ${disponible
-                            ? `<button class="boton" type="button" onclick="solicitarAdopcion(${Number(mascota.id)})">Quiero adoptar ♡</button>`
-                            : ""}
-                    </div>
-                </article>`;
-        }).join("");
+        contenedor.innerHTML = filtradas.map(crearTarjeta).join("");
     }
 
     async function cargarMascotas() {
         try {
             const respuesta = await fetch("/api/mascotas");
 
-            if (!respuesta.ok) {
-                throw new Error("No se pudo consultar el catálogo");
-            }
+            if (!respuesta.ok) throw new Error("No se pudo consultar el catálogo.");
 
             mascotas = await respuesta.json();
-            renderizarMascotas();
+            mostrarMascotas();
         } catch (error) {
-            lista.innerHTML = '<div class="mensaje-catalogo">No pudimos cargar las mascotas. Inténtalo nuevamente más tarde. 💗</div>';
+            contador.textContent = "No se pudo cargar el catálogo";
+            contenedor.innerHTML = '<div class="catalogo-mensaje">No se pudieron cargar las mascotas. Comprueba que el servidor esté funcionando.</div>';
         }
     }
 
-    function solicitarAdopcion(id) {
-        window.location.href = `/solicitud.html?mascotaId=${encodeURIComponent(id)}`;
+    document.querySelectorAll("[data-especie]").forEach(boton => {
+        boton.addEventListener("click", () => {
+            especieSeleccionada = normalizar(boton.dataset.especie);
+            document.querySelectorAll("[data-especie]").forEach(opcion => opcion.classList.remove("activa"));
+            boton.classList.add("activa");
+            mostrarMascotas();
+        });
+    });
+
+    [buscarNombre, filtroSexo, filtroEdad, ordenar].forEach(elemento => {
+        elemento.addEventListener(elemento.tagName === "INPUT" ? "input" : "change", mostrarMascotas);
+    });
+
+    document.querySelectorAll('input[name="estado"]').forEach(elemento => {
+        elemento.addEventListener("change", mostrarMascotas);
+    });
+
+    document.getElementById("limpiarFiltros").addEventListener("click", () => {
+        buscarNombre.value = "";
+        filtroSexo.value = "";
+        filtroEdad.value = "";
+        ordenar.value = "nombre";
+        document.querySelectorAll('input[name="estado"]').forEach(elemento => elemento.checked = false);
+        especieSeleccionada = "";
+        document.querySelectorAll("[data-especie]").forEach(boton => {
+            boton.classList.toggle("activa", boton.dataset.especie === "");
+        });
+        mostrarMascotas();
+    });
+
+    async function cargarMenu() {
+        try {
+            const respuesta = await fetch("/api/auth/sesion", { credentials: "same-origin" });
+            if (!respuesta.ok) return;
+
+            const sesion = await respuesta.json();
+            document.getElementById("enlaceLogin")?.remove();
+            document.getElementById("enlaceRegistro")?.remove();
+
+            const cuenta = document.createElement("a");
+            cuenta.href = sesion.rol === "ADMIN" ? "/admin.html" : "/mis-solicitudes.html";
+            cuenta.textContent = sesion.rol === "ADMIN" ? "Administración" : "Mis solicitudes";
+            document.getElementById("menuPrincipal").appendChild(cuenta);
+
+            const salir = document.createElement("a");
+            salir.href = "#";
+            salir.textContent = "Cerrar sesión";
+            salir.addEventListener("click", async evento => {
+                evento.preventDefault();
+                const salida = await fetch("/api/auth/logout", {
+                    method: "POST",
+                    credentials: "same-origin"
+                });
+                if (salida.ok) window.location.href = "/index.html";
+                else alert("No se pudo cerrar la sesión.");
+            });
+            document.getElementById("menuPrincipal").appendChild(salir);
+        } catch (error) {
+            console.error("No se pudo consultar la sesión.");
+        }
     }
 
-    buscar.addEventListener("input", renderizarMascotas);
-    filtroEspecie.addEventListener("change", renderizarMascotas);
-    filtroEstado.addEventListener("change", renderizarMascotas);
-
     cargarMascotas();
+    cargarMenu();
 </script>
 </body>
 </html>
